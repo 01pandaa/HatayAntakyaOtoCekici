@@ -18,10 +18,10 @@ CONFIG = {
     "postal": "31030",
     "lat": 36.246482,
     "lng": 36.167135,
-    "domain": "https://ersanotokurtarma.com",
+    "domain": "https://www.otokurtarmaotocekici.com",
     # GitHub Pages proje adresinde "/RepoAdi/", kendi alan adında "/" olmalı (404 sayfası için)
-    "base_path": "/HatayAntakyaOtoCekici/",
-    "custom_domain": False,  # True yapılırsa CNAME dosyası oluşturulur
+    "base_path": "/",
+    "custom_domain": True,  # True yapılırsa CNAME dosyası oluşturulur
 }
 C = CONFIG
 OUT = os.path.join(os.path.dirname(__file__), "site")
