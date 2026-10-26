@@ -18,7 +18,7 @@ CONFIG = {
     "postal": "31030",
     "lat": 36.246482,
     "lng": 36.167135,
-    "domain": "https://www.otokurtarmaotocekici.com",
+    "domain": "https://www.ersanotocekici.com",
     # GitHub Pages proje adresinde "/RepoAdi/", kendi alan adında "/" olmalı (404 sayfası için)
     "base_path": "/",
     "custom_domain": True,  # True yapılırsa CNAME dosyası oluşturulur
@@ -82,6 +82,25 @@ TRUCK_ART = '''<svg viewBox="0 0 520 300" role="img" aria-label="Üzerinde otomo
 <circle cx="410" cy="236" r="24" fill="#14202e"/><circle cx="410" cy="236" r="10" fill="#9aa8b8"/></g>
 <text x="205" y="226" fill="#0E2A47" font-family="Arial,sans-serif" font-weight="800" font-size="13" text-anchor="middle">7/24 OTO KURTARMA</text>
 </svg>'''
+
+# ------------------------------------------------------------------ fotoğraflar
+PHOTOS = {
+ "kare1": ("cekici-724-otoyol.webp", 615, 679, "7/24 oto çekici: otoyolda araç yükleyen kayar kasalı çekici"),
+ "kare2": ("yolda-mi-kaldiniz-yagmur.webp", 616, 679, "Yağmurlu gecede yolda kalan araca çekici yardımı"),
+ "kare3": ("cekici-724-gunbatimi.webp", 618, 667, "Gün batımında aracı çekiciye yükleyen kurtarma personeli"),
+ "kare4": ("yolda-mi-kaldiniz-gece.webp", 618, 667, "Gece yağmurda araç kurtarma operasyonu"),
+ "genis1": ("oto-kurtarma-sehir.webp", 1254, 572, "Şehir içinde SUV taşıyan oto kurtarma çekicisi"),
+ "genis2": ("oto-kurtarma-otoyol.webp", 1254, 562, "Otoyolda araç taşıyan beyaz oto kurtarma çekicisi"),
+}
+def img(depth, key, cls="photo", eager=False):
+    f, w, h, alt = PHOTOS[key]
+    load = 'fetchpriority="high" decoding="async"' if eager else 'loading="lazy" decoding="async"'
+    return f'<img class="{cls}" src="{rel(depth, "assets/img/" + f)}" width="{w}" height="{h}" alt="{e(alt)}" {load}>'
+
+def gallery(depth):
+    sq = "".join(f'<a class="g-item" href="tel:{C["phone_tel"]}" aria-label="Hemen arayın">{img(depth, k)}</a>' for k in ("kare1","kare2","kare3","kare4"))
+    wd = "".join(f'<a class="g-item" href="tel:{C["phone_tel"]}" aria-label="Hemen arayın">{img(depth, k)}</a>' for k in ("genis1","genis2"))
+    return f'<div class="gallery g4">{sq}</div><div class="gallery g2" style="margin-top:18px">{wd}</div>'
 
 # ------------------------------------------------------------------ veri
 SERVICES = [
@@ -221,7 +240,7 @@ def biz_schema():
       "url": C["domain"] + "/",
       "telephone": C["phone_tel"],
       "email": C["email"],
-      "image": C["domain"] + "/assets/img/og-image.png",
+      "image": C["domain"] + "/assets/img/og-image.jpg",
       "logo": C["domain"] + "/assets/img/logo.svg",
       "priceRange": "₺₺",
       "founder": {"@type": "Person", "name": C["owner"]},
@@ -310,7 +329,7 @@ def page(path, title, desc, body, active="", schemas=(), keywords=""):
 <meta name="geo.region" content="TR-31"><meta name="geo.placename" content="Antakya, Hatay"><meta name="geo.position" content="{C["lat"]};{C["lng"]}"><meta name="ICBM" content="{C["lat"]}, {C["lng"]}">
 <meta property="og:type" content="website"><meta property="og:locale" content="tr_TR"><meta property="og:site_name" content="{e(C["name"])}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{canonical}">
-<meta property="og:image" content="{C["domain"]}/assets/img/og-image.png"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="{C["domain"]}/assets/img/og-image.jpg"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="{rel(depth,"assets/img/favicon.svg")}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -410,19 +429,24 @@ def build_home():
 <div class="hero-cta" style="margin-top:12px">{loc_btn("btn btn-ghost")}</div>
 <div class="stats"><div><b>15 dk</b><span>Antakya ort. varış</span></div><div><b>7/24</b><span>Kesintisiz hizmet</span></div><div><b>15</b><span>Hatay ilçesi</span></div><div><b>81 il</b><span>Şehirlerarası taşıma</span></div></div>
 </div>
-<div class="hero-art"><span class="badge">Şu an açık</span><div class="card">{TRUCK_ART}</div></div>
+<div class="hero-art"><span class="badge">Şu an açık</span><div class="card">{img(0, "kare1", eager=True)}</div></div>
 </div></section>
 {sos(0)}
 <section class="section" id="hizmetler"><div class="container">
 <div class="head center"><span class="kicker">Hizmetlerimiz</span><h2>Yolda kalmanıza çözüm olacak tüm hizmetler</h2><p>Araç çekmeden zor kurtarmaya, şehir içinden şehirlerarası taşımaya — tek elden profesyonel çözüm.</p></div>
 <div class="grid g3">{service_cards(0)}</div>
 </div></section>
+<section class="section alt" id="galeri"><div class="container">
+<div class="head center"><span class="kicker">Sahadan Kareler</span><h2>Yolda kaldığınız her an yanınızdayız</h2><p>Gece, yağmur, otoyol ya da şehir içi — Hatay'ın her köşesinde 7/24 çekici ve kurtarma.</p></div>
+{gallery(0)}
+<div class="hero-cta" style="justify-content:center;margin-top:28px">{call_btn("btn btn-call btn-lg", "Hemen Ara", C["phone_display"])}{wa_btn("btn btn-wa btn-lg", "WhatsApp'tan Yaz", sub="Hızlı mesaj gönder")}</div>
+</div></section>
 <section class="section dark"><div class="container">
 <div class="head center"><span class="kicker">Neden Biz</span><h2>Hatay'da neden {e(C["name"])}?</h2><p>Sadece bir çekici değil, yolda kaldığınızda yanınızda duran bir çözüm ortağı.</p></div>
 <div class="grid g3">{why_block()}</div>
 </div></section>
 <section class="section"><div class="container about">
-<div class="art">{TRUCK_ART}<span class="tag">Sigortalı &amp; Güvenilir</span></div>
+<div class="art">{img(0, "genis1")}<span class="tag">Sigortalı &amp; Güvenilir</span></div>
 <div><span class="kicker">Hakkımızda</span><h2>{e(C["owner"])} ile yolda güvendesiniz</h2>
 <p style="margin-top:14px">{e(C["name"])}, Antakya'da {e(C["owner"])} tarafından kurulan, bölge halkının güvendiği yerel bir oto kurtarma ve yol yardım işletmesidir. Antakya'nın sokaklarını, Defne'den İskenderun'a, Reyhanlı'dan Arsuz'a kadar Hatay'ın tüm güzergâhlarını yakından tanıyoruz.</p>
 <p>Amacımız yalnızca aracınızı çekmek değil; stresli bir anınızda yanınızda olmak ve sizi güvenle yola devam ettirmek. Bu yüzden <strong>şeffaf fiyat</strong>, <strong>deneyimli sürücüler</strong> ve <strong>bakımlı ekipman</strong> bizim için vazgeçilmez.</p>
@@ -541,7 +565,7 @@ def build_about():
     cr = [("", "Ana Sayfa"), ("hakkimizda/", "Hakkımızda")]
     body = page_hero(1, cr, "Hakkımızda", f"{e(C['name'])} — Antakya merkezli, Hatay'ın tüm ilçelerine hizmet veren yerel oto kurtarma işletmesi.")
     body += f'''<section class="section"><div class="container about">
-<div class="art">{TRUCK_ART}<span class="tag">7/24 Hizmetteyiz</span></div>
+<div class="art">{img(1, "genis2")}<span class="tag">7/24 Hizmetteyiz</span></div>
 <div class="prose"><span class="kicker">Biz Kimiz?</span><h2>{e(C["owner"])} ile yolda güvendesiniz</h2>
 <p>{e(C["name"])}, Hatay'ın Antakya ilçesinde {e(C["owner"])} tarafından kurulmuştur. Bölgeyi yakından tanıyan ekibimizle Antakya merkezden Hatay'ın en uzak köyüne kadar yolda kalan sürücülere destek oluyoruz.</p>
 <p>Yolda kalmanın ne kadar stresli olduğunu biliyoruz. Bu yüzden telefonu her zaman bir yetkili açar, fiyatı yola çıkmadan netleştirir ve aracınızı kendi aracımız gibi taşırız.</p>
