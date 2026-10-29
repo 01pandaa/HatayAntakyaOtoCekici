@@ -306,3 +306,33 @@ p{color:var(--muted)}
   .cta .acts,.cta .acts .btn,.sos .acts,.sos .acts .btn{width:100%}
   .drop.cols{grid-template-columns:1fr 1fr}
 }
+
+/* ---- Uygun fiyat vurgusu ---- */
+.top-price{background:var(--amber);color:var(--navy-3);font-weight:800;padding:2px 12px;border-radius:999px;font-size:.82rem;white-space:nowrap}
+.price-pill{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(90deg,#FFB400,#ffd34d);color:var(--navy-3);font-weight:800;font-size:1.08rem;padding:8px 18px 8px 8px;border-radius:999px;margin:14px 0 4px;box-shadow:0 8px 24px rgba(255,180,0,.35);animation:glow 2.4s ease-in-out infinite}
+.price-pill .tl{width:34px;height:34px;border-radius:50%;background:var(--navy-3);color:var(--amber);display:grid;place-items:center;font-size:1.15rem;flex:none}
+.price-pill.sm{font-size:.9rem;margin:0 0 12px;padding:5px 14px 5px 5px}
+.price-pill.sm .tl{width:26px;height:26px;font-size:.95rem}
+.page-hero .price-pill{margin:0 0 14px}
+.hero-art .badge-price{position:absolute;left:-18px;bottom:28px;z-index:2;background:var(--red);color:#fff;font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:1.6rem;line-height:1;text-align:center;padding:16px 18px;border-radius:50%;width:122px;height:122px;display:grid;place-items:center;transform:rotate(-10deg);box-shadow:0 12px 30px rgba(230,57,70,.5);border:4px solid #fff}
+.price-band{background:linear-gradient(135deg,#FFB400 0%,#ffcc33 100%);padding:64px 0;position:relative}
+.price-head{text-align:center;max-width:760px;margin:0 auto 34px}
+.price-tag{display:inline-block;background:var(--red);color:#fff;font-weight:800;letter-spacing:2px;padding:6px 16px;border-radius:8px;font-size:.9rem;margin-bottom:14px}
+.price-band h2{color:var(--navy-3);font-size:clamp(2.2rem,5vw,3.6rem)}
+.price-band h2 span{color:var(--red)}
+.price-band .price-head p{color:#3b3000;font-size:1.12rem;margin-top:12px;font-weight:500}
+.price-band .price-head p strong{color:var(--navy-3)}
+.p-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.p-card{background:#fff;border-radius:18px;padding:24px;display:flex;gap:16px;align-items:flex-start;box-shadow:0 10px 28px rgba(14,42,71,.14)}
+.p-card h3{color:var(--navy);margin-bottom:6px}
+.p-ico{flex:none;width:50px;height:50px;border-radius:14px;background:var(--navy);color:var(--amber);display:grid;place-items:center;font-weight:800;font-size:1.5rem}
+.price-band .acts{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+.facts .hl{background:var(--amber);border-left-color:var(--red)}
+.facts .hl b{color:var(--navy-3)}
+.facts .hl span{color:#3b3000;font-weight:600}
+@keyframes glow{0%,100%{box-shadow:0 8px 24px rgba(255,180,0,.35)}50%{box-shadow:0 8px 34px rgba(255,180,0,.75)}}
+@media (max-width:900px){.p-grid{grid-template-columns:1fr}.hero-art .badge-price{left:auto;right:-6px;bottom:-18px;width:100px;height:100px;font-size:1.3rem}}
+@media (max-width:640px){.top-price{font-size:.74rem;padding:2px 9px}.price-pill{font-size:.95rem}.price-band{padding:48px 0}.price-band .acts .btn{width:100%}}
+.hero-art .badge{z-index:3}
+.live{white-space:nowrap}
+@media (max-width:640px){.price-pill{font-size:.9rem;padding:6px 14px 6px 6px}.price-pill .tl{width:28px;height:28px;font-size:1rem}}

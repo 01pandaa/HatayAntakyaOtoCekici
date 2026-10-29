@@ -283,7 +283,7 @@ def header(depth, active):
         else:
             links.append(f'<a href="{rel(depth,p)}"{cur}>{n}</a>')
     return f'''<a class="skip" href="#main">İçeriğe atla</a>
-<div class="topbar"><div class="container"><span class="live"><i></i> Şu an açık · 7/24 hizmetteyiz</span><span class="hide-s">Antakya merkez &amp; Hatay'ın tüm ilçeleri · <a href="tel:{C["phone_tel"]}">{C["phone_display"]}</a></span></div></div>
+<div class="topbar"><div class="container"><span class="live"><i></i> Şu an açık<span class="hide-s">&nbsp;· 7/24 hizmetteyiz</span></span><span class="top-price">₺ Uygun Fiyat · En Uygun Çekici</span><span class="hide-s">Antakya merkez &amp; Hatay'ın tüm ilçeleri · <a href="tel:{C["phone_tel"]}">{C["phone_display"]}</a></span></div></div>
 <header class="header"><div class="container">
 <a class="brand" href="{rel(depth,"")}" aria-label="{e(C["name"])} ana sayfa">{LOGO}<span><b>{e(C["name"])}</b><small>7/24 Antakya &amp; Hatay Çekici</small></span></a>
 <nav class="nav" aria-label="Ana menü">{"".join(links)}</nav>
@@ -356,17 +356,32 @@ def page_hero(depth, crumbs, h1, lead, extra=""):
     cr = ' <span>/</span> '.join([f'<a href="{rel(depth,p)}">{e(n)}</a>' for p, n in crumbs[:-1]] + [e(crumbs[-1][1])])
     return f'''<section class="page-hero"><div class="container">
 <nav class="crumbs" aria-label="Sayfa yolu">{cr}</nav>
-<h1>{h1}</h1><p>{lead}</p>
+{price_pill()}<h1>{h1}</h1><p>{lead}</p>
 <div class="hero-cta">{call_btn("btn btn-call btn-lg", "Hemen Ara", C["phone_display"])}{wa_btn("btn btn-wa btn-lg", "WhatsApp'tan Yaz", sub="Hızlı mesaj gönder")}{extra}</div>
+</div></section>'''
+
+def price_pill(text="Hatay'ın En Uygun Fiyatlı Oto Çekicisi"):
+    return f'<div class="price-pill"><span class="tl">₺</span><span>{e(text)}</span></div>'
+
+def price_band(depth):
+    items = [("En Uygun Fiyat", "Hatay'da en uygun fiyatlı çekici hizmeti. Bütçenizi yormadan yola dönün."),
+             ("Sabit Fiyat, Sürpriz Yok", "Fiyat yola çıkmadan telefonda netleşir; sonradan ek ücret çıkmaz."),
+             ("Gece de Aynı Uygun Fiyat", "Gece, hafta sonu ve bayramlarda da uygun fiyat politikamız değişmez.")]
+    cards = "".join(f'<div class="p-card"><span class="p-ico">₺</span><div><h3>{e(t)}</h3><p>{e(x)}</p></div></div>' for t, x in items)
+    return f'''<section class="price-band" id="uygun-fiyat"><div class="container">
+<div class="price-head"><span class="price-tag">UYGUN FİYAT</span><h2>En Uygun Fiyat, <span>En Hızlı Çekici</span></h2>
+<p>Yolda kalmak zaten yeterince can sıkıcı. Hatay'ın her yerinde <strong>uygun fiyatlı</strong>, şeffaf ve güvenilir hizmet.</p></div>
+<div class="p-grid">{cards}</div>
+<div class="acts">{call_btn("btn btn-call btn-lg", "Hemen Fiyat Al", C["phone_display"])}{wa_btn("btn btn-wa btn-lg", "WhatsApp'tan Fiyat Sor", msg="Merhaba, çekici için fiyat almak istiyorum. Konumum: ", sub="Ücretsiz fiyat bilgisi")}</div>
 </div></section>'''
 
 def sos(depth):
     return f'''<section class="sos"><div class="container">
-<div><h2>Acil mi? Şimdi arayın.</h2><p>Antakya merkezde ortalama 15-20 dakikada yanınızdayız.</p></div>
+<div><h2>Acil mi? Şimdi arayın.</h2><p>Uygun fiyat, hızlı varış: Antakya merkezde ortalama 15-20 dakikada yanınızdayız.</p></div>
 <div class="acts">{call_btn("btn btn-call btn-lg")}{wa_btn("btn btn-wa btn-lg", "WhatsApp", msg="Merhaba, yardıma ihtiyacım var.")}</div>
 </div></section>'''
 
-def cta(depth, title="Yolda mı kaldınız?", text="Bir telefon kadar yakınız. Hemen arayın veya WhatsApp'tan konumunuzu gönderin, en yakın çekicimiz yola çıksın."):
+def cta(depth, title="Yolda mı kaldınız?", text="En uygun fiyatlı çekici bir telefon kadar yakın. Hemen arayın veya WhatsApp'tan konumunuzu gönderin, fiyatı hemen söyleyelim."):
     return f'''<section class="section" style="padding-top:20px"><div class="container"><div class="cta">
 <div><h2>{e(title)}</h2><p>{e(text)}</p></div>
 <div class="acts">{call_btn("btn btn-call btn-lg")}{wa_btn("btn btn-wa btn-lg", "WhatsApp")}</div>
@@ -387,7 +402,7 @@ def district_grid(depth, exclude=None):
 WHY = [
  ("7/24 Açık", "Gece 03:00'te de, pazar sabahı da arayabilirsiniz. Telefonu her zaman bir yetkili açar."),
  ("Hızlı Varış", "Antakya merkez içinde ortalama 15-20 dakika, ilçelerde mesafeye göre 25-80 dakika."),
- ("Şeffaf Fiyat", "Fiyat yola çıkmadan telefonda netleşir. Sürpriz ek ücret yok."),
+ ("En Uygun Fiyat", "Hatay'ın en uygun fiyatlı çekici hizmeti. Fiyat yola çıkmadan netleşir, sürpriz ek ücret yok."),
  ("Profesyonel Ekipman", "Kayar kasalı çekici, vinç ve kurtarma donanımıyla her duruma hazırız."),
  ("Tüm Hatay'da", "Antakya başta olmak üzere 15 ilçenin tamamında ve şehirlerarası güzergâhlarda."),
  ("Sigortalı Taşıma", "Şehirlerarası taşımalarda aracınız sigorta güvencesiyle yolculuk eder."),
@@ -399,6 +414,7 @@ FAQ = [
  ("7/24 hizmet veriyor musunuz?", "Evet, haftanın 7 günü 24 saat hizmetinizdeyiz. Gece, hafta sonu ve resmi tatiller dahil her an arayabilirsiniz."),
  ("Hangi bölgelere hizmet veriyorsunuz?", "Antakya merkez başta olmak üzere Hatay'ın 15 ilçesinin tamamına (Antakya, Defne, İskenderun, Arsuz, Belen, Dörtyol, Payas, Erzin, Kırıkhan, Kumlu, Reyhanlı, Hassa, Samandağ, Yayladağı, Altınözü) ve şehirlerarası tüm güzergâhlara hizmet veriyoruz."),
  ("Ortalama varış süreniz nedir?", "Antakya merkez içinde ortalama 15-20 dakika; ilçelerde mesafe, konum ve trafik yoğunluğuna göre 25-80 dakika içinde yanınızdayız."),
+ ("Fiyatlarınız uygun mu?", "Evet. Hatay'da en uygun fiyatlı çekici hizmetini sunmayı hedefliyoruz. Fiyatı yola çıkmadan telefonda söylüyoruz; gece ve hafta sonu da aynı uygun fiyat politikası geçerlidir, sürpriz ek ücret yoktur."),
  ("Fiyat nasıl belirleniyor?", "Fiyat; mesafe, araç tipi ve hizmet türüne göre belirlenir ve yola çıkmadan önce telefonda netleştirilir. Sürpriz ek ücret yoktur."),
  ("Hangi araçları çekiyorsunuz?", "Otomobil, SUV, hafif ticari, panelvan, minibüs ve motosiklet dahil tüm binek araçları çekiyoruz. Ağır vasıta için ön görüşme yapılır."),
  ("Şehirlerarası araç taşıma yapıyor musunuz?", "Evet, Hatay'dan Türkiye'nin tüm illerine güvenli ve sigortalı araç taşıma hizmeti veriyoruz."),
@@ -412,7 +428,7 @@ def aside(depth, current_service=None, current_district=None):
     svc = "".join(f'<a href="{rel(depth,"hizmetler/"+s["slug"]+"/")}">{e(s["name"])}</a>' for s in SERVICES if s["slug"] != current_service)
     dis = "".join(f'<a href="{rel(depth,d["path"])}">{e(d["name"])} Oto Çekici</a>' for d in D if d["slug"] != current_district)
     return f'''<aside class="aside">
-<div class="box"><h3>7/24 Acil Çekici</h3><p>Yolda kaldıysanız hemen arayın ya da konumunuzu WhatsApp'tan gönderin.</p>
+<div class="box"><div class="price-pill sm"><span class="tl">₺</span><span>En Uygun Fiyat</span></div><h3>7/24 Acil Çekici</h3><p>Uygun fiyatlı çekici için hemen arayın ya da konumunuzu WhatsApp'tan gönderin; fiyatı telefonda netleştirelim.</p>
 {call_btn("btn btn-call", "Hemen Ara", C["phone_display"])}{wa_btn("btn btn-wa", "WhatsApp'tan Yaz")}{loc_btn("btn loc-btn")}</div>
 <div class="box light"><h3>Hizmetlerimiz</h3>{svc}</div>
 <div class="box light"><h3>Hizmet Bölgeleri</h3>{dis}</div>
@@ -423,15 +439,17 @@ def build_home():
     body = f'''<section class="hero"><div class="container">
 <div>
 <span class="eyebrow">● 7/24 Antakya &amp; Hatay Oto Çekici</span>
-<h1 style="margin-top:18px">Yolda Kalmayın, <span>Bize Ulaşın.</span></h1>
-<p>Antakya ve Hatay genelinde <strong>7/24 güvenilir, hızlı ve profesyonel</strong> oto kurtarma, araç çekme, yol yardım ve araç taşıma hizmeti. {e(C["owner"])} ve deneyimli ekibiyle tek aramada yanınızdayız.</p>
+{price_pill()}
+<h1 style="margin-top:14px">Yolda Kalmayın, <span>Bize Ulaşın.</span></h1>
+<p>Antakya ve Hatay genelinde <strong>7/24 en uygun fiyatlı, hızlı ve güvenilir</strong> oto kurtarma, araç çekme, yol yardım ve araç taşıma hizmeti. {e(C["owner"])} ve deneyimli ekibiyle tek aramada yanınızdayız.</p>
 <div class="hero-cta">{call_btn("btn btn-call btn-lg", "Hemen Ara", C["phone_display"])}{wa_btn("btn btn-wa btn-lg", "WhatsApp'tan Yaz", sub="Hızlı mesaj gönder")}</div>
 <div class="hero-cta" style="margin-top:12px">{loc_btn("btn btn-ghost")}</div>
-<div class="stats"><div><b>15 dk</b><span>Antakya ort. varış</span></div><div><b>7/24</b><span>Kesintisiz hizmet</span></div><div><b>15</b><span>Hatay ilçesi</span></div><div><b>81 il</b><span>Şehirlerarası taşıma</span></div></div>
+<div class="stats"><div><b>15 dk</b><span>Antakya ort. varış</span></div><div><b>7/24</b><span>Kesintisiz hizmet</span></div><div><b>15</b><span>Hatay ilçesi</span></div><div><b>₺</b><span>En uygun fiyat</span></div></div>
 </div>
-<div class="hero-art"><span class="badge">Şu an açık</span><div class="card">{img(0, "kare1", eager=True)}</div></div>
+<div class="hero-art"><span class="badge">Şu an açık</span><span class="badge-price">En Uygun<br>Fiyat</span><div class="card">{img(0, "kare1", eager=True)}</div></div>
 </div></section>
 {sos(0)}
+{price_band(0)}
 <section class="section" id="hizmetler"><div class="container">
 <div class="head center"><span class="kicker">Hizmetlerimiz</span><h2>Yolda kalmanıza çözüm olacak tüm hizmetler</h2><p>Araç çekmeden zor kurtarmaya, şehir içinden şehirlerarası taşımaya — tek elden profesyonel çözüm.</p></div>
 <div class="grid g3">{service_cards(0)}</div>
@@ -463,10 +481,10 @@ def build_home():
 <p style="text-align:center;margin-top:20px"><a class="more" href="sss/">Tüm soruları gör</a></p>
 </div></section>
 {cta(0)}'''
-    page("", f"{C['name']} | 7/24 Antakya & Hatay Oto Çekici, Yol Yardım", 
-         f"{C['name']} — Antakya ve Hatay'ın tüm ilçelerinde 7/24 oto çekici, araç kurtarma, yol yardım ve araç taşıma. Hemen arayın: {C['phone_display']}.",
+    page("", f"{C['name']} | 7/24 Antakya & Hatay Oto Çekici — Uygun Fiyat", 
+         f"{C['name']} — Antakya ve Hatay'ın tüm ilçelerinde 7/24 en uygun fiyatlı oto çekici, araç kurtarma, yol yardım ve araç taşıma. Hemen arayın: {C['phone_display']}.",
          body, active="", schemas=[faq_schema(FAQ[:6])],
-         keywords="oto çekici, oto kurtarma, Antakya çekici, Hatay çekici, Hatay oto kurtarma, yol yardım, araç taşıma, " + ", ".join(d["name"]+" çekici" for d in D))
+         keywords="uygun fiyatlı çekici, en uygun oto çekici, ucuz çekici Hatay, uygun fiyat oto kurtarma, oto çekici, oto kurtarma, Antakya çekici, Hatay çekici, Hatay oto kurtarma, yol yardım, araç taşıma, " + ", ".join(d["name"]+" çekici" for d in D))
 
 def build_services():
     body = page_hero(1, [("", "Ana Sayfa"), ("hizmetler/", "Hizmetler")], "Oto Kurtarma <span style='color:var(--amber)'>Hizmetlerimiz</span>",
@@ -503,7 +521,7 @@ def build_services():
 {aside(2, current_service=s["slug"])}
 </div></section>
 {cta(2)}'''
-        page(path, f"{s['title']} | Antakya & Hatay 7/24 — {C['name']}",
+        page(path, f"{s['title']} | Uygun Fiyat, Antakya & Hatay 7/24 — {C['name']}",
              f"Antakya ve Hatay'da 7/24 {s['name'].lower()}: {s['short']} Hemen arayın: {C['phone_display']}.",
              body, active="hizmetler/", schemas=[crumbs_schema(cr), faq_schema(qas),
                {"@context": "https://schema.org", "@type": "Service", "name": s["title"], "serviceType": s["name"], "provider": {"@id": C["domain"] + "/#business"}, "areaServed": [d["name"] for d in D]}],
@@ -537,7 +555,7 @@ def build_districts():
             extra=loc_btn("btn btn-ghost btn-lg"))
         body += f'''<section class="section"><div class="container content">
 <div class="prose">
-<div class="facts"><div><b>{e(d["eta"])}</b><span>Ortalama varış</span></div><div><b>{e(d["km"])}</b><span>Antakya merkeze uzaklık</span></div><div><b>7/24</b><span>Kesintisiz hizmet</span></div></div>
+<div class="facts"><div><b>{e(d["eta"])}</b><span>Ortalama varış</span></div><div><b>{e(d["km"])}</b><span>Antakya merkeze uzaklık</span></div><div class="hl"><b>Uygun Fiyat</b><span>7/24 · sürpriz ücret yok</span></div></div>
 <h2>{e(d['loc'])} oto çekici ve yol yardım</h2>
 <p>{e(d["intro"])}</p>
 <p>{e(n)}, {dist_txt}. {e(d["note"])}</p>
@@ -555,11 +573,11 @@ def build_districts():
 </div></section>
 <section class="section alt"><div class="container"><div class="head center"><span class="kicker">Diğer Bölgeler</span><h2>Hatay'ın diğer ilçelerinde de yanınızdayız</h2></div><div class="districts">{district_grid(2, exclude=d["slug"])}</div></div></section>
 {cta(2, title=f"{d['loc']} yolda mı kaldınız?")}'''
-        page(d["path"], f"{n} Oto Çekici 7/24 | {n} Oto Kurtarma & Yol Yardım — {C['name']}",
-             f"{n} oto çekici ve oto kurtarma: 7/24 araç çekme, kaza kurtarma, akü takviye ve araç taşıma. Ortalama varış {d['eta']}. Hemen arayın: {C['phone_display']}.",
+        page(d["path"], f"{n} Oto Çekici 7/24 | Uygun Fiyatlı {n} Oto Kurtarma — {C['name']}",
+             f"{n} oto çekici ve oto kurtarma: uygun fiyatlı, 7/24 araç çekme, kaza kurtarma, akü takviye ve araç taşıma. Ortalama varış {d['eta']}. Hemen arayın: {C['phone_display']}.",
              body, active="bolgeler/", schemas=[crumbs_schema(cr), faq_schema(qas),
                {"@context": "https://schema.org", "@type": "Service", "name": f"{n} Oto Çekici", "serviceType": "Oto çekici ve yol yardım", "provider": {"@id": C["domain"] + "/#business"}, "areaServed": {"@type": "City", "name": n, "containedInPlace": {"@type": "AdministrativeArea", "name": "Hatay"}}}],
-             keywords=f"{n} oto çekici, {n} çekici, {n} oto kurtarma, {n} yol yardım, {n} araç taşıma, {n} en yakın çekici, " + ", ".join(d["areas"][:4]))
+             keywords=f"{n} oto çekici, {n} uygun fiyatlı çekici, {n} ucuz çekici, {n} çekici, {n} oto kurtarma, {n} yol yardım, {n} araç taşıma, {n} en yakın çekici, " + ", ".join(d["areas"][:4]))
 
 def build_about():
     cr = [("", "Ana Sayfa"), ("hakkimizda/", "Hakkımızda")]
