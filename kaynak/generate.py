@@ -28,7 +28,7 @@ CONFIG = {
     "ads_id": "",            # Google Ads dönüşüm kimliği, ör. "AW-123456789"
     "ads_call_label": "",    # Google Ads "Arama tıklaması" dönüşüm etiketi, ör. "AbCdEfGhIjk"
     "ads_wa_label": "",      # Google Ads "WhatsApp tıklaması" dönüşüm etiketi
-    "gtm_id": "",            # (isteğe bağlı) Google Tag Manager, ör. "GTM-XXXXXXX"
+    "gtm_id": "GTM-W2J28PBR",            # (isteğe bağlı) Google Tag Manager, ör. "GTM-XXXXXXX"
     "meta_pixel_id": "",     # (isteğe bağlı) Meta / Facebook Pixel kimliği, ör. "123456789012345"
 }
 C = CONFIG
@@ -338,6 +338,11 @@ def tracking_head():
                    f"fbq('init','{C['meta_pixel_id']}');fbq('track','PageView');</script>")
     return "\n".join(out)
 
+def gtm_noscript():
+    if not C["gtm_id"]: return ""
+    return (f'<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={C["gtm_id"]}" '
+            'height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>')
+
 def page(path, title, desc, body, active="", schemas=(), keywords=""):
     depth = path.count("/")
     canonical = C["domain"] + "/" + path
@@ -367,6 +372,7 @@ def page(path, title, desc, body, active="", schemas=(), keywords=""):
 {sch}
 </head>
 <body id="top">
+{gtm_noscript()}
 {header(depth, active)}
 <main id="main">
 {body}
