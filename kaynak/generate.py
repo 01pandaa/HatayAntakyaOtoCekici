@@ -22,6 +22,14 @@ CONFIG = {
     # GitHub Pages proje adresinde "/RepoAdi/", kendi alan adında "/" olmalı (404 sayfası için)
     "base_path": "/",
     "custom_domain": True,  # True yapılırsa CNAME dosyası oluşturulur
+    # ---------------- DÖNÜŞÜM TAKİBİ ----------------
+    # Boş bırakılan hiçbir şey yüklenmez. Kodları girip `python3 generate.py` çalıştırın.
+    "ga4_id": "",            # Google Analytics 4 ölçüm kimliği, ör. "G-ABC123XYZ"
+    "ads_id": "",            # Google Ads dönüşüm kimliği, ör. "AW-123456789"
+    "ads_call_label": "",    # Google Ads "Arama tıklaması" dönüşüm etiketi, ör. "AbCdEfGhIjk"
+    "ads_wa_label": "",      # Google Ads "WhatsApp tıklaması" dönüşüm etiketi
+    "gtm_id": "",            # (isteğe bağlı) Google Tag Manager, ör. "GTM-XXXXXXX"
+    "meta_pixel_id": "",     # (isteğe bağlı) Meta / Facebook Pixel kimliği, ör. "123456789012345"
 }
 C = CONFIG
 OUT = os.path.join(os.path.dirname(__file__), "site")
@@ -309,6 +317,27 @@ def footer(depth):
 <div class="mbar"><a class="m-call" href="tel:{C["phone_tel"]}">{I["phone"]} HEMEN ARA</a><a class="m-wa" href="{e(wa("Merhaba, yardıma ihtiyacım var."))}" target="_blank" rel="noopener">{I["wa"]} WHATSAPP</a></div>
 <script src="{rel(depth,"assets/js/main.js")}" defer></script>'''
 
+def tracking_head():
+    """Dönüşüm takibi kodları. main.js tıklamaları bu ayarlara göre bildirir."""
+    cfg = {"ads_id": C["ads_id"], "ads_call_label": C["ads_call_label"], "ads_wa_label": C["ads_wa_label"],
+           "ga4": bool(C["ga4_id"]), "meta": bool(C["meta_pixel_id"])}
+    out = [f'<script>window.dataLayer=window.dataLayer||[];window.TRACK={json.dumps(cfg)};</script>']
+    gt = C["ga4_id"] or C["ads_id"]
+    if gt:
+        cfgs = "".join(f"gtag('config','{x}');" for x in (C["ga4_id"], C["ads_id"]) if x)
+        out.append(f'<script async src="https://www.googletagmanager.com/gtag/js?id={gt}"></script>'
+                   f"<script>function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());{cfgs}</script>")
+    if C["gtm_id"]:
+        out.append("<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});"
+                   "var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;"
+                   f"f.parentNode.insertBefore(j,f);}})(window,document,'script','dataLayer','{C['gtm_id']}');</script>")
+    if C["meta_pixel_id"]:
+        out.append("<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};"
+                   "if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;"
+                   "s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');"
+                   f"fbq('init','{C['meta_pixel_id']}');fbq('track','PageView');</script>")
+    return "\n".join(out)
+
 def page(path, title, desc, body, active="", schemas=(), keywords=""):
     depth = path.count("/")
     canonical = C["domain"] + "/" + path
@@ -334,6 +363,7 @@ def page(path, title, desc, body, active="", schemas=(), keywords=""):
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{rel(depth,"assets/css/style.css")}">
+{tracking_head()}
 {sch}
 </head>
 <body id="top">

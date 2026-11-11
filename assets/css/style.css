@@ -336,3 +336,6 @@ p{color:var(--muted)}
 .hero-art .badge{z-index:3}
 .live{white-space:nowrap}
 @media (max-width:640px){.price-pill{font-size:.9rem;padding:6px 14px 6px 6px}.price-pill .tl{width:28px;height:28px;font-size:1rem}}
+/* mobil taşma düzeltmesi */
+.content>*,.about>*,.hero .container>*{min-width:0}
+@media (max-width:640px){.hero-cta .btn,.box .btn{white-space:normal;text-align:center}.btn-lg{padding:16px 18px;font-size:1.05rem}}
