@@ -25,9 +25,9 @@ CONFIG = {
     # ---------------- DÖNÜŞÜM TAKİBİ ----------------
     # Boş bırakılan hiçbir şey yüklenmez. Kodları girip `python3 generate.py` çalıştırın.
     "ga4_id": "",            # Google Analytics 4 ölçüm kimliği, ör. "G-ABC123XYZ"
-    "ads_id": "",            # Google Ads dönüşüm kimliği, ör. "AW-123456789"
-    "ads_call_label": "",    # Google Ads "Arama tıklaması" dönüşüm etiketi, ör. "AbCdEfGhIjk"
-    "ads_wa_label": "",      # Google Ads "WhatsApp tıklaması" dönüşüm etiketi
+    "ads_id": "AW-18538174951",            # Google Ads dönüşüm kimliği, ör. "AW-123456789"
+    "ads_call_label": "3V45CP-1mrYdEOez2IdF",  # Google Ads "Kişi" dönüşümü    # Google Ads "Arama tıklaması" dönüşüm etiketi, ör. "AbCdEfGhIjk"
+    "ads_wa_label": "3V45CP-1mrYdEOez2IdF",    # şimdilik aynı "Kişi" dönüşümü      # Google Ads "WhatsApp tıklaması" dönüşüm etiketi
     "gtm_id": "GTM-W2J28PBR",            # (isteğe bağlı) Google Tag Manager, ör. "GTM-XXXXXXX"
     "meta_pixel_id": "",     # (isteğe bağlı) Meta / Facebook Pixel kimliği, ör. "123456789012345"
 }
@@ -323,7 +323,11 @@ def tracking_head():
            "ga4": bool(C["ga4_id"]), "meta": bool(C["meta_pixel_id"])}
     out = [f'<script>window.dataLayer=window.dataLayer||[];window.TRACK={json.dumps(cfg)};</script>']
     gt = C["ga4_id"] or C["ads_id"]
-    if gt:
+    if gt and C["gtm_id"]:
+        # Google etiketi GTM içinden yükleniyor; ikinci kez yüklemiyoruz (çift sayımı önler).
+        # gtag() komutları dataLayer'a gider, GTM'deki Google etiketi bunları işler.
+        out.append("<script>function gtag(){dataLayer.push(arguments);}</script>")
+    elif gt:
         cfgs = "".join(f"gtag('config','{x}');" for x in (C["ga4_id"], C["ads_id"]) if x)
         out.append(f'<script async src="https://www.googletagmanager.com/gtag/js?id={gt}"></script>'
                    f"<script>function gtag(){{dataLayer.push(arguments);}}gtag('js',new Date());{cfgs}</script>")
